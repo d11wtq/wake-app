@@ -12,9 +12,9 @@ I currently use it to start the radio playing for an hour each morning.
 
 ``` erlang
 % Start playing SBS Radio 2 at 8am every morning, until 9am.
-{ok, Pid} = daily_event:start_link("open 'radium://tune-in/?h=&b=sbs&c=2&'",
+{ok, Pid} = daily_task:start_link("open 'radium://tune-in/?h=&b=sbs&c=2&'",
                                    {8,0,0},
-                                   {9,0,0}).
+                                   3600).
 ```
 
 ## License & Copyright
