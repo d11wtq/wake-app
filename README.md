@@ -11,10 +11,16 @@ I currently use it to start the radio playing for an hour each morning.
 ## Example
 
 ``` erlang
+% Start the scheduler
+application:start(wake_app).
+
 % Start playing SBS Radio 2 at 8am every morning, until 9am.
-{ok, Pid} = daily_task:start_link("open 'radium://tune-in/?h=&b=sbs&c=2&'",
-                                   {8,0,0},
-                                   3600).
+{ok, TaskRef} = wake_app:schedule("open 'radium://tune-in/?h=&b=sbs&c=2&'",
+                                  {8,0,0},
+                                  3600).
+
+% Stop the scheduler
+application:stop(wake_app).
 ```
 
 ## License & Copyright

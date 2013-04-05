@@ -1,14 +1,14 @@
 %% @doc Runs a command at the same time every day.
 
--module(daily_task).
+-module(wake_app_task).
 
 -export([start/3,
          start_link/3]).
 
 -record(task, {cmd,
                start_at,
-               duration=60000,
-               state=wait}).
+               duration=60,
+               state=waiting}).
 
 %% -- public api
 
@@ -32,7 +32,7 @@ start_link(Cmd, Start = {_, _, _}, Duration) ->
 
 %% -- private api
 
-loop(Task = #task{state=wait}) ->
+loop(Task = #task{state=waiting}) ->
   case within_run_window(calendar:local_time(), Task) of
     true ->
       io:format("Running `~s'~n", [Task#task.cmd]),
@@ -49,11 +49,11 @@ loop(Task = #task{state=running}) ->
       loop(Task);
     false ->
       io:format("Stopping `~s'~n", [Task#task.cmd]),
-      loop(Task#task{state=wait})
+      loop(Task#task{state=waiting})
   end.
 
 make_task(Cmd, {H,M,S}, Duration) ->
-  #task{cmd=Cmd, state=wait, start_at={H,M,S}, duration=Duration}.
+  #task{cmd=Cmd, state=waiting, start_at={H,M,S}, duration=Duration}.
 
 within_run_window({Date, Time}, #task{start_at={H, M, S}, duration=Duration}) ->
   Now   = calendar:datetime_to_gregorian_seconds({Date, Time}),

@@ -1,0 +1,7 @@
+{application, wake_app,
+  [{vsn, "1.0.0"},
+   {description, "Toy project to run tasks at the same time each day"},
+   {modules, [wake_app, wake_app_scheduler, wake_app_task]},
+   {registered, [wake_app]},
+   {mod, {wake_app, []}}
+  ]}.
