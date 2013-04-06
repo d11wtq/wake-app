@@ -4,6 +4,7 @@
 -behaviour(gen_server).
 
 -export([start_link/0,
+         start_link/1,
          stop/1,
          schedule/2,
          unschedule/2,
@@ -23,6 +24,18 @@
 %% @spec start_link() -> {ok, pid()}.
 start_link() ->
   gen_server:start_link(?MODULE, dict:new(), []).
+
+%% @doc Start the schedule server running as a registered process.
+%%
+%% @spec start_link(ProcName) -> {ok, pid()}.
+start_link(Name) ->
+  case start_link() of
+    {ok, Pid} ->
+      register(Name, Pid),
+      {ok, Pid};
+    {error, Reason} ->
+      {error, Reason}
+  end.
 
 %% @doc Add a task to the schedule.
 %%
@@ -54,9 +67,9 @@ stop(Pid) ->
 init(Tasks) ->
   {ok, Tasks}.
 
-%% Nothing to do during termination.
+%% Shutdown the entire VM once we're finished.
 terminate(normal, _) ->
-  ok.
+  init:stop().
 
 %% Add a new task to the schedule.
 handle_call({schedule, Cmd, Start, Duration}, _From, Tasks) ->

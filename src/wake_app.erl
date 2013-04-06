@@ -36,13 +36,7 @@ list() ->
 %%
 %% @spec start(normal, []) -> {ok, Pid}.
 start(normal, _Args) ->
-  case wake_app_scheduler:start_link() of
-    {ok, Pid} ->
-      register(?MODULE, Pid),
-      {ok, Pid};
-    {error, Reason} ->
-      {error, Reason}
-  end.
+  wake_app_scheduler_sup:start_link(?MODULE).
 
 %% @doc Shutdown the application.
 %%
